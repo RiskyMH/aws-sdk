@@ -1,6 +1,6 @@
 {
   "name": "@riskymh/aws",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Custom SDK and Types for AWS services (ie S3 and by extension R2)!",
   "repository": {
     "type": "git",
@@ -20,6 +20,9 @@
     "build": "bun build ./src/index.ts ./src/s3/index.ts --splitting --outdir=dist --external=fast-xml-parser",
     "prepack": "bun exec \"rm -rf dist && bun run build\""
   },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "src/index.ts",
   "exports": {
     ".": {
       "bun": "./src/index.ts",
