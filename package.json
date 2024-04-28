@@ -1,6 +1,6 @@
 {
   "name": "@riskymh/aws",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Custom SDK and Types for AWS services (ie S3 and by extension R2)!",
   "repository": {
     "type": "git",
@@ -41,5 +41,13 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "package.json",
+    "LICENSE",
+    "tsconfig.json"
+  ]
 }
