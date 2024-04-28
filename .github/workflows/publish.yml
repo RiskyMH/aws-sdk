@@ -1,0 +1,48 @@
+name: Publish Package to npmjs
+on:
+ release:
+  types: [published]
+ push:
+  paths: package.json
+
+jobs:
+ npm-publish:
+  runs-on: ubuntu-latest
+  permissions:
+    contents: read
+    id-token: write
+  steps:
+   - uses: actions/checkout@v4
+   # Setup .npmrc file to publish to npm
+   - uses: actions/setup-node@v4
+     with:
+      node-version: "latest"
+      registry-url: "https://registry.npmjs.org"
+   - uses: oven-sh/setup-bun@v1
+   - run: bun install --frozen-lockfile
+   - run: bun run build
+   - run: npm publish --provenance --access public || true
+     name: Publish to npm
+     env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+ github-packages-publish:
+  runs-on: ubuntu-latest
+  permissions:
+    contents: read
+    packages: write
+    id-token: write
+  steps:
+   - uses: actions/checkout@v4
+   # Setup .npmrc file to publish to npm
+   - uses: actions/setup-node@v4
+     with:
+      node-version: "latest"
+      registry-url: "https://npm.pkg.github.com"
+   - uses: oven-sh/setup-bun@v1
+   - run: bun install --frozen-lockfile
+   - run: bun run build
+   - run: npm publish --provenance --access public || true
+     name: Publish to github packages
+     env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+  

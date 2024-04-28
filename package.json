@@ -1,0 +1,45 @@
+{
+  "name": "@riskymh/aws",
+  "version": "0.0.1",
+  "description": "Custom SDK and Types for AWS services (ie S3 and by extension R2)!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RiskyMH/aws-sdk.git"
+  },
+  "homepage": "https://github.com/RiskyMH/aws-sdk",
+  "author": "RiskyMH (https://riskymh.dev)",
+  "keywords": [
+    "aws",
+    "sdk",
+    "s3",
+    "r2"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "bun build ./src/index.ts ./src/s3/index.ts --splitting --outdir=dist --external=fast-xml-parser",
+    "prepack": "bun exec \"rm -rf dist && bun run build\""
+  },
+  "exports": {
+    ".": {
+      "bun": "./src/index.ts",
+      "import": "./dist/index.js",
+      "types": "./src/index.ts"
+    },
+    "./s3": {
+      "bun": "./src/s3/index.ts",
+      "import": "./dist/s3/index.js",
+      "types": "./src/s3/index.ts"
+    }
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "fast-xml-parser": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
