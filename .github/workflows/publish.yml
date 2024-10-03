@@ -6,7 +6,26 @@ on:
   paths: package.json
 
 jobs:
- publish:
+ npm-publish:
+  runs-on: ubuntu-latest
+  permissions:
+   contents: read
+   id-token: write
+  steps:
+   - uses: actions/checkout@v4
+   # Setup .npmrc file to publish to npm
+   - uses: actions/setup-node@v4
+     with:
+      node-version: "*"
+      registry-url: "https://registry.npmjs.org"
+   - uses: oven-sh/setup-bun@v1
+   - run: bun install --frozen-lockfile
+   - run: bun pm pack
+   - run: npm publish riskymh-aws-*.tgz --provenance --access public || true
+     name: Publish to npm
+     env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+ github-packages-publish:
   runs-on: ubuntu-latest
   permissions:
    contents: read
@@ -18,18 +37,11 @@ jobs:
    - uses: actions/setup-node@v4
      with:
       node-version: "*"
-      registry-url: "https://registry.npmjs.org"
+      registry-url: "https://npm.pkg.github.com"
    - uses: oven-sh/setup-bun@v1
-
    - run: bun install --frozen-lockfile
    - run: bun pm pack
-
-   - name: Authenticate to npm
-     run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-   - run: npm publish riskymh-aws-*.tgz --provenance --access=public || true
-     name: Publish to npm
-
-   - name: Configure GitHub Packages registry
-     run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
-   - run: npm publish riskymh-aws-*.tgz --provenance --access=public --registry=https://npm.pkg.github.com || true
+   - run: npm publish riskymh-aws-*.tgz --provenance --access public || true
      name: Publish to github packages
+     env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
