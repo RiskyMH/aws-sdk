@@ -22,11 +22,11 @@ jobs:
    - uses: oven-sh/setup-bun@v1
    - run: bun install --frozen-lockfile
    - run: bun pm pack
-   - run: npm publish riskymh-aws-*.tgz --provenance --access public || true
+   - run: npm publish riskymh-aws-*.tgz --provenance --access=public || true
      name: Publish to npm
      env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-   - run: npm publish riskymh-aws-*.tgz --provenance --access public --registry=https://npm.pkg.github.com || true
+   - run: npm publish riskymh-aws-*.tgz --provenance --access=public --@riskymh:registry=https://npm.pkg.github.com || true
      name: Publish to github packages
      env:
       NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
