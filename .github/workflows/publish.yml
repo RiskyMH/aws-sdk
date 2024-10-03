@@ -9,24 +9,27 @@ jobs:
  publish:
   runs-on: ubuntu-latest
   permissions:
-    contents: read
-    packages: write
-    id-token: write
+   contents: read
+   packages: write
+   id-token: write
   steps:
    - uses: actions/checkout@v4
    # Setup .npmrc file to publish to npm
    - uses: actions/setup-node@v4
      with:
-      node-version: "latest"
+      node-version: "*"
       registry-url: "https://registry.npmjs.org"
    - uses: oven-sh/setup-bun@v1
+
    - run: bun install --frozen-lockfile
    - run: bun pm pack
+
+   - name: Authenticate to npm
+     run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
    - run: npm publish riskymh-aws-*.tgz --provenance --access=public || true
      name: Publish to npm
-     env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+   - name: Configure GitHub Packages registry
+     run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
    - run: npm publish riskymh-aws-*.tgz --provenance --access=public --@riskymh:registry=https://npm.pkg.github.com || true
      name: Publish to github packages
-     env:
-      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
