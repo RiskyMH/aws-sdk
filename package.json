@@ -1,6 +1,6 @@
 {
   "name": "@riskymh/aws",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Custom SDK and Types for AWS services (ie S3 and by extension R2)!",
   "repository": "https://github.com/RiskyMH/aws-sdk.git",
   "homepage": "https://github.com/RiskyMH/aws-sdk",

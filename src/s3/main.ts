@@ -16,7 +16,7 @@ export default class S3Client extends AwsClient {
         }
         const res = await super.fetch(path, { method, body, headers: params });
         if (!res.ok) {
-            console.log(res)
+            console.error(res)
             throw new Error(`Failed to fetch ${method} ${path}: ${res.status} ${await res.text()}`);
         }
         return res;

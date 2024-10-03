@@ -20,8 +20,8 @@ jobs:
       registry-url: "https://registry.npmjs.org"
    - uses: oven-sh/setup-bun@v1
    - run: bun install --frozen-lockfile
-   - run: bun run build
-   - run: npm publish --provenance --access public || true
+   - run: bun pm pack
+   - run: npm publish --provenance --access public $(find . -type f -name 'riskymh-aws-*.tgz') || true
      name: Publish to npm
      env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -40,8 +40,8 @@ jobs:
       registry-url: "https://npm.pkg.github.com"
    - uses: oven-sh/setup-bun@v1
    - run: bun install --frozen-lockfile
-   - run: bun run build
-   - run: npm publish --provenance --access public || true
+   - run: bun pm pack
+   - run: npm publish --provenance --access public $(find . -type f -name 'riskymh-aws-*.tgz') || true
      name: Publish to github packages
      env:
       NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
