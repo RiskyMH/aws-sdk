@@ -2,7 +2,7 @@
 
 /**
  * @license MIT <https://opensource.org/licenses/MIT>
- * @copyright Michael Hart 2022
+ * @copyright Michael Hart 2024
  */
 
 const encoder = new TextEncoder()
@@ -332,8 +332,7 @@ export class AwsV4Signer {
     }
 }
 
-async function hmac(key: string | ArrayBufferView | ArrayBuffer, string: string): Promise<ArrayBuffer> {
-    // @ts-ignore // https://github.com/microsoft/TypeScript/issues/38715
+async function hmac(key: string | BufferSource, string: string): Promise<ArrayBuffer> {
     const cryptoKey = await crypto.subtle.importKey(
         'raw',
         typeof key === 'string' ? encoder.encode(key) : key,
@@ -344,13 +343,20 @@ async function hmac(key: string | ArrayBufferView | ArrayBuffer, string: string)
     return crypto.subtle.sign('HMAC', cryptoKey, encoder.encode(string))
 }
 
-async function hash(content: string | ArrayBufferView | ArrayBuffer): Promise<ArrayBuffer> {
-    // @ts-ignore // https://github.com/microsoft/TypeScript/issues/38715
+async function hash(content: string | BufferSource): Promise<ArrayBuffer> {
     return crypto.subtle.digest('SHA-256', typeof content === 'string' ? encoder.encode(content) : content)
 }
 
-function buf2hex(buffer: ArrayBuffer | ArrayLike<number> | SharedArrayBuffer): string {
-    return Array.prototype.map.call(new Uint8Array(buffer), x => ('0' + x.toString(16)).slice(-2)).join('')
+const HEX_CHARS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+function buf2hex(arrayBuffer: ArrayBufferLike) {
+    const buffer = new Uint8Array(arrayBuffer);
+    let out = '';
+    for (let idx = 0; idx < buffer.length; idx++) {
+        const n = buffer[idx];
+        out += HEX_CHARS[(n >>> 4) & 0xF];
+        out += HEX_CHARS[n & 0xF];
+    }
+    return out
 }
 
 function encodeRfc3986(urlEncodedStr: string): string {
@@ -402,7 +408,7 @@ function guessServiceRegion(url: URL, headers: Headers): [string, string] {
         ;[service, region] = [region, service]
     }
 
-    return [(HOST_SERVICES as Record<string, string>)[service] || service, region]
+    return [(HOST_SERVICES as Record<string, string>)[service] || service, region || '']
 }
 
 export { AwsClient }

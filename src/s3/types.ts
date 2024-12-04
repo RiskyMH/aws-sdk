@@ -3,7 +3,7 @@ type Listable<T> = T | T[]
 /** Because this is typed XML, the date should be ISO string and you should parse it yourself */
 type DateString = string
 
-export enum APIName {
+export const enum APIName {
     ListBuckets = "ListBuckets",
     HeadBucket = "HeadBucket",
     CreateBucket = "CreateBucket",

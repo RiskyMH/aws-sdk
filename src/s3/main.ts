@@ -8,10 +8,7 @@ const xmlBuilder = new XMLBuilder();
 export default class S3Client extends AwsClient {
     async fetchS3(method: "GET" | "POST" | "HEAD" | "PATCH" | "PUT" | "DELETE", path: string, params?: Record<any, any>, body?: any) {
         if (params) {
-            const searchParams = new URLSearchParams();
-            for (const [key, value] of Object.entries(params)) {
-                searchParams.append(key, value);
-            }
+            const searchParams = new URLSearchParams(params);
             path += `?${searchParams.toString()}`;
         }
         const res = await super.fetch(path, { method, body, headers: params });
@@ -24,11 +21,9 @@ export default class S3Client extends AwsClient {
 
     async signS3(method: "GET" | "POST" | "HEAD" | "PATCH" | "PUT" | "DELETE", path: string, apiName: APIName, params: Record<any, any>) {
         params = { ...params, "x-id": apiName }
-        const searchParams = new URLSearchParams();
-        for (const [key, value] of Object.entries(params)) {
-            if (value == undefined) continue
-            searchParams.append(key, value);
-        }
+        const searchParams = new URLSearchParams(
+            Object.entries(params).filter(([, value]) => value !== undefined)
+        );
         path += `?${searchParams.toString()}`;
 
         const awsSign = new AwsV4Signer({
